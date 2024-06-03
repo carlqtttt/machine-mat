@@ -11,6 +11,7 @@ import java.util.*;
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.*;
 import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -182,6 +183,7 @@ public class SignupOne extends JFrame implements ActionListener {
 
         // Existing actionPerformed code for "Next" button
         String formno = "" + random;  // String <---- long
+        String cardnumber = "" + random;
         String dob = ((JTextField) dateChooser.getDateEditor().getUiComponent()).getText();
         String gender = null;
         if (male.isSelected()) {
@@ -215,6 +217,8 @@ public class SignupOne extends JFrame implements ActionListener {
             c.insertData("insert into signup (formno, dob, gender, email, type, pin, status, image) "
                     + "values('" + formno + "',"
                     + "'" + dob + "','" + gender + "', '" + email + "', '" + xtype + "','" + xxpin + "', 'pending', '" + destination + "')");
+
+            c.insertData("insert into login values('" + formno + "', '" + cardnumber + "', '" + xxpin + "', 'pending', '" + xtype + "')");
 
             if (destination != null && imagePath != null) {
                 Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);

@@ -94,18 +94,15 @@ public class PinChange extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Please, Re-Enter New PIN:");
                 }
 
-                // We have to change the PIN in all the 3 tables.
+                // We have to change the PIN in all the 3 tables.   
                 Conn c = new Conn();
-                String query1 = "Update bank set pin = '" + rpin + "' where pin='" + pinnumber + "'";
-                String query2 = "Update login set pin = '" + rpin + "' where pin='" + pinnumber + "'";
-                String query3 = "Update signupthree set pin = '" + rpin + "' where pin='" + pinnumber + "'";
-
-                c.updateData(query1);
-                c.updateData(query2);
-                c.updateData(query3);
-
+                String xxpin = passwordHashing.hashPassword(pin.getText());
+                Session sess = Session.getInstance();
+//                String query1 = "Update bank set pin = '" + xxpin + "' where signID ='" + sess.getSignID() + "'";
+                new Conn().updateData("Update signup set pin = '" + xxpin + "' where signID ='" + sess.getSignID() + "'");
+                System.out.println(sess.getSignID());   
                 JOptionPane.showMessageDialog(null, "PIN changed successfully !!");
-
+                
                 setVisible(false);
                 new Transactions(pinnumber).setVisible(true);
             } catch (Exception e) {

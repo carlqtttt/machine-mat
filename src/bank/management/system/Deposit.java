@@ -15,7 +15,8 @@ public class Deposit extends JFrame implements ActionListener {
     Deposit(String pinnumber) {
 
         this.pinnumber = pinnumber;
-
+        Session sess = Session.getInstance();
+        System.out.println(sess.getSignID());
         setLayout(null);
 
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/atm.jpg"));
@@ -58,6 +59,8 @@ public class Deposit extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        Session s = Session.getInstance();
+        System.out.println(s.getSignID());
         if (ae.getSource() == deposit) {
             String number = amount.getText();
             Date date = new Date();
@@ -65,10 +68,16 @@ public class Deposit extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Please, Enter the amount you want to deposit");
             } else {
                 try {
+
                     Conn conn = new Conn();
                     Session sess = Session.getInstance();
-                    conn.insertData("insert into bank values('" + sess.getSignID() + "','" + pinnumber + "','" + date + "', 'Deposit' ,'" + number + "')");
+//                    conn.insertData("insert into bank values('" + sess.getSignID() + "','" + pinnumber + "','" + date + "', 'Deposit' ,'" + number + "')");
+                    conn.insertData("insert into bank (signID, pin, date ,type, amount)"
+                            + "values('" + sess.getSignID() + "','" + pinnumber + "','" + date + "', 'Deposit' ,'" + number + "')");
                     JOptionPane.showMessageDialog(null, "Peso " + number + " Deposited Successfully");
+
+                    System.out.println(sess.getSignID());
+
                     setVisible(false);
                     new Transactions(pinnumber).setVisible(true);
                 } catch (Exception e) {

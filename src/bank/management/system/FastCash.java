@@ -92,13 +92,14 @@ public class FastCash extends JFrame implements ActionListener {
             }
             try {
                 // Checking balance before Withdrawing money.
-                ResultSet rs = c.getData("select * from bank where pin = '" + pinnumber + "'");
+                Session sess = Session.getInstance();
+                ResultSet rs = c.getData("select * from bank where signID = '" + sess.getSignID() + "'");
                 int balance = 0;
                 while (rs.next()) {
                     // We are looping through each rows.
                     if (rs.getString("type").equals("Deposit")) {
                         balance += Integer.parseInt(rs.getString("amount"));
-                    } else {
+                    } else if (rs.getString("type").equals("Withdraw")) {
                         balance -= Integer.parseInt(rs.getString("amount"));
                     }
                 }
@@ -109,8 +110,10 @@ public class FastCash extends JFrame implements ActionListener {
                 }
 
                 Date date = new Date();
-                c.insertData("insert into bank values('" + pinnumber + "','" + date + "','Withdrawl','" + amount + "')");
+                c.insertData("insert into bank (signID, pin, date, type, amount)"
+                        + "values('" + sess.getSignID() + "','" + pinnumber + "','" + date + "','Withdraw','" + amount + "')");
                 JOptionPane.showMessageDialog(null, "Rs " + amount + " Withdrawn Successfully");
+
                 setVisible(false);
                 new Transactions(pinnumber).setVisible(true);
             } catch (Exception e) {

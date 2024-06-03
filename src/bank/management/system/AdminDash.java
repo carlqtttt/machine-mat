@@ -48,6 +48,7 @@ public class AdminDash extends javax.swing.JFrame {
         pendingAccounts();
         UserLogs();
         remove.setEnabled(false);
+        viewLogs();
     }
 
     private boolean validationChecker() {
@@ -69,6 +70,16 @@ public class AdminDash extends javax.swing.JFrame {
         try {
             Session sess = Session.getInstance();
             ResultSet rs = new Conn().getData("select * from signup where signID != '" + sess.getSignID() + "'");
+            usersTB.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (SQLException e) {
+            System.err.println("An error occurred while fetching data: " + e.getMessage());
+        }
+    }
+    
+     private void viewLogs() {
+        try {
+            Session sess = Session.getInstance();
+            ResultSet rs = new Conn().getData("select * from logs where signID != '" + sess.getSignID() + "'");
             usersTB.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException e) {
             System.err.println("An error occurred while fetching data: " + e.getMessage());
@@ -270,6 +281,7 @@ public class AdminDash extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
@@ -372,6 +384,21 @@ public class AdminDash extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel14.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1240, Short.MAX_VALUE)
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 50, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1240, 50));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 1240, 10));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 21)); // NOI18N
@@ -1392,6 +1419,7 @@ public class AdminDash extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

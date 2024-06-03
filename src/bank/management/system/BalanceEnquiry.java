@@ -32,12 +32,13 @@ public class BalanceEnquiry extends JFrame implements ActionListener {
         int balance = 0;
         try {
             // Checking balance before Withdrawing money.
-            ResultSet rs = c.getData("select * from bank where pin = '" + pinnumber + "'");
+            Session sess = Session.getInstance();
+            ResultSet rs = c.getData("select * from bank where signID = '" + sess.getSignID() + "'");
 
             while (rs.next()) {
-                if (rs.getString("type").equals("Deposit")) {
+                if (rs.getString("type").equalsIgnoreCase("Deposit")) {
                     balance += Integer.parseInt(rs.getString("amount"));
-                } else {
+                } else if (rs.getString("type").equalsIgnoreCase("Withdraw")) {
                     balance -= Integer.parseInt(rs.getString("amount"));
                 }
             }
@@ -46,6 +47,7 @@ public class BalanceEnquiry extends JFrame implements ActionListener {
         }
 
         JLabel text = new JLabel("Your Current Account Balance is Rs " + balance);
+        
         text.setBounds(170, 200, 700, 35);
         text.setForeground(Color.WHITE);
         text.setFont(new Font("System", Font.BOLD, 16));

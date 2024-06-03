@@ -72,20 +72,21 @@ public class Withdrawl extends JFrame implements ActionListener {
                     Conn cn = new Conn();
 
                     // Using PreparedStatement to avoid SQL injection
-                    String sql = "INSERT INTO bank (pin, date, type, amount) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO bank (signID,pin, date, type, amount) VALUES (? , ?, ?, ?, ?)";
                     PreparedStatement pst = cn.getConnection().prepareStatement(sql);
-
+                    
                     // Set the values for the PreparedStatement
-                    pst.setString(1, hashedPass);
-                    pst.setDate(2, new java.sql.Date(new Date().getTime()));
-                    pst.setString(3, "Withdraw");
-                    pst.setString(4, number);
+                    pst.setString(1, sess.getSignID());
+                    pst.setString(2, hashedPass);
+                    pst.setDate(3, new java.sql.Date(new Date().getTime()));
+                    pst.setString(4, "Withdraw");
+                    pst.setString(5, number);
 
                     // Execute the update
                     pst.executeUpdate();
-
+                    
                     JOptionPane.showMessageDialog(null, "Rs " + number + " withdrawn successfully");
-
+                    
                 } catch (SQLIntegrityConstraintViolationException duplicateKeyException) {
                     JOptionPane.showMessageDialog(null, "Failed to withdraw. Duplicate primary key ID detected. " + duplicateKeyException.getMessage());
                 } catch (Exception e) {

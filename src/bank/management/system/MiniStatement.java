@@ -18,7 +18,7 @@ public class MiniStatement extends JFrame {
         JLabel mini = new JLabel();
         add(mini);
 
-        JLabel bank = new JLabel("CVL Machine");
+        JLabel bank = new JLabel("Indian Bank");
         bank.setBounds(150, 20, 100, 20);
         add(bank);
 
@@ -43,13 +43,14 @@ public class MiniStatement extends JFrame {
         try {
             Conn conn = new Conn();
             int bal = 0;
-            ResultSet rs = conn.getData("select * from bank where pin = '" + pin + "'");
+            Session sess = Session.getInstance();
+            ResultSet rs = conn.getData("select * from bank where signID = '" + sess.getSignID() + "'");
             while (rs.next()) {
                 // setText() does not append but overrides. So, we have to use the following to append.
                 mini.setText(mini.getText() + "<html>" + rs.getString("date") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + rs.getString("type") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + rs.getString("amount") + "<br><br><html>");
                 if (rs.getString("type").equals("Deposit")) {
                     bal += Integer.parseInt(rs.getString("amount"));
-                } else {
+                } else if (rs.getString("type").equals("Withdraw")) {
                     bal -= Integer.parseInt(rs.getString("amount"));
                 }
             }

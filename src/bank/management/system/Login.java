@@ -18,7 +18,7 @@ public class Login extends JFrame implements ActionListener {
     // ActionListener is present inside java.awt.event
     // We have to override all the methods of interface.
     // We have to define the Buttons, TextFields Globally, so that we can access them in functions.
-    JButton login, clear, signup, admin;
+    JButton login, clear, signup;
     JTextField cardTextField;
     JPasswordField pinTextField;  // So that password is not visible.
 
@@ -92,13 +92,6 @@ public class Login extends JFrame implements ActionListener {
         signup.addActionListener(this);
         add(signup);
 
-        admin = new JButton("ADMINS VIEW");
-        admin.setBounds(300, 400, 230, 30);
-        admin.setBackground(Color.BLACK);
-        admin.setForeground(Color.WHITE);
-        admin.addActionListener(this);
-        add(admin);
-
         getContentPane().setBackground(Color.white);  // Changing the background colour of Frame. 
 
         setSize(800, 480);  // setSize(width, height);  sets the size of JFrame.
@@ -108,40 +101,55 @@ public class Login extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent ae) {
         // What action to do, if button is clicked.
-        // ActionEvent class helps in finding on which component action was performed. For e.g., Suppose, which button was clicked.
+        // ActionEvent class helps in finding on which component action was perfformed. For e.g., Suppose, which button was clicked.
         if (ae.getSource() == clear) {
             cardTextField.setText("");
             pinTextField.setText("");
         } else if (ae.getSource() == login) {
-            Conn conn = null;
             try {
-                conn = new Conn();
-            } catch (SQLException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            String cardnumber = cardTextField.getText();
-            String pinnnumber = pinTextField.getText();
-            // We will compare the card number stored in the database is same or not to the card number entered by the user.
-            try {
-                // For DDL Command, we use executeQuery() function.
-                String hashedPass = passwordHashing.hashPassword(pinTextField.getText());
-                ResultSet rs = conn.getData("select * from signup where formno = '" + cardnumber + "' and pin = '" + hashedPass + "'");
+                String cardnumber = cardTextField.getText();
+                String pinnnumber = pinTextField.getText();
+
+                // Hash the PIN for comparison
+                String hashedPassword = passwordHashing.hashPassword(pinTextField.getText());
+
+                // Query to check card number and hashed password
+                String query = "SELECT * FROM signup WHERE formno = '" + cardnumber + "' AND pin = '" + hashedPassword + "'";
+
+                Conn cn = new Conn();
+                ResultSet rs = cn.getData(query);
 
                 if (rs.next()) {
-                    // If data matches.
-                    String userType = rs.getString("type");
+
                     Session sess = Session.getInstance();
                     sess.setSignID(rs.getString("signID"));
-                    sess.setDob(rs.getString("dob"));
-                    sess.setGender(rs.getString("gender"));
-                    sess.setFormno(rs.getString("formno"));
 
-                    if ("admin".equals(userType)) {
-                        setVisible(false);
-                        new AdminDash().setVisible(true);
+                    String type = rs.getString("type");
+                    String status = rs.getString("status"); // Assuming there's a column named status in your database
+
+                    if (status.equals("pending")) {
+                        // Show warning message for pending status
+                        JOptionPane.showMessageDialog(null, "Your account is pending. Please contact admin for further assistance.");
                     } else {
-                        setVisible(false);
-                        new Transactions(pinnnumber).setVisible(true);
+
+                        if (type.equals("admin")) {
+                            new AdminDash().setVisible(true);
+                            dispose();
+                        } else {
+                            new Transactions(pinnnumber).setVisible(true);
+                            dispose();
+                        }
+
+                        // If the user is not pending, redirect accordingly
+//                        if (isAdmin) {
+//                            // Redirect to admin page
+//                            setVisible(false);
+//                            new AdminDash().setVisible(true);
+//                        } else {
+//                            // Redirect to user transaction page
+//                            setVisible(false);
+//                            new Transactions(pinnnumber).setVisible(true);
+//                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Incorrect Card Number or Pin");
@@ -149,13 +157,13 @@ public class Login extends JFrame implements ActionListener {
             } catch (Exception e) {
                 System.out.println(e);
             }
+
         } else if (ae.getSource() == signup) {
             setVisible(false);
             new SignupOne().setVisible(true);
-        } else if (ae.getSource() == admin) {
-            setVisible(false);
-            new AdminDash().setVisible(true);
         }
+//        setVisible(false);
+//        new SignupOne().setVisible(true);
     }
 
     public static void main(String args[]) {
