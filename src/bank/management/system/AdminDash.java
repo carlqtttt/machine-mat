@@ -198,11 +198,11 @@ public class AdminDash extends javax.swing.JFrame {
 
     public void updateAccount() throws NoSuchAlgorithmException {
         try {
-            String xdob = dob1.getText().trim();
-            String xemail = email1.getText().trim();
-            String xtype = type1.getSelectedItem() == null ? "" : type1.getSelectedItem().toString().trim();
-            String xstatus = status1.getSelectedItem() == null ? "" : status1.getSelectedItem().toString().trim();
-            String xgender = gender1.getSelectedItem() == null ? "" : gender1.getSelectedItem().toString().trim();
+            String xdob = dob.getText().trim();
+            String xemail = email.getText().trim();
+            String xtype = type.getSelectedItem() == null ? "" : type.getSelectedItem().toString().trim();
+            String xstatus = status.getSelectedItem() == null ? "" : status.getSelectedItem().toString().trim();
+            String xgender = gender.getSelectedItem() == null ? "" : gender.getSelectedItem().toString().trim();
 
             if (xdob.isEmpty() || xemail.isEmpty() || xtype.isEmpty() || xstatus.isEmpty() || xgender.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "PLEASE FILL ALL THE FIELDS!");
@@ -399,10 +399,10 @@ public class AdminDash extends javax.swing.JFrame {
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addGap(0, 30, Short.MAX_VALUE)
         );
 
-        jPanel1.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1240, 50));
+        jPanel1.add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 1240, 30));
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 1240, 10));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 21)); // NOI18N
