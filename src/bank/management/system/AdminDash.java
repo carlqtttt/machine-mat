@@ -47,8 +47,8 @@ public class AdminDash extends javax.swing.JFrame {
         displayData();
         pendingAccounts();
         UserLogs();
-        remove.setEnabled(false);
         viewLogs();
+        remove.setEnabled(false);
     }
 
     private boolean validationChecker() {
@@ -75,8 +75,8 @@ public class AdminDash extends javax.swing.JFrame {
             System.err.println("An error occurred while fetching data: " + e.getMessage());
         }
     }
-    
-     private void viewLogs() {
+
+    private void viewLogs() {
         try {
             Session sess = Session.getInstance();
             ResultSet rs = new Conn().getData("select * from logs where signID != '" + sess.getSignID() + "'");
@@ -113,6 +113,9 @@ public class AdminDash extends javax.swing.JFrame {
             new Conn().updateData("UPDATE signup SET status = 'ACTIVE' WHERE signID = '" + tbl.getValueAt(rowIndex, 0).toString() + "'");
             JOptionPane.showMessageDialog(null, "ACCOUNT APPROVED SUCCESSFULLY!!");
             displayData();
+            pendingAccounts();
+            UserLogs();
+            viewLogs();
         }
     }
 
@@ -125,6 +128,9 @@ public class AdminDash extends javax.swing.JFrame {
             new Conn().updateData("UPDATE signup SET status = 'declined' WHERE signID = '" + tbl.getValueAt(rowIndex, 0).toString() + "'");
             JOptionPane.showMessageDialog(null, "ACCOUNT APPROVED SUCCESSFULLY!!");
             displayData();
+            pendingAccounts();
+            UserLogs();
+            viewLogs();
         }
     }
 
@@ -190,13 +196,13 @@ public class AdminDash extends javax.swing.JFrame {
         }
     }
 
-    public void updateProduct() throws NoSuchAlgorithmException {
+    public void updateAccount() throws NoSuchAlgorithmException {
         try {
-            String xdob = dob.getText().trim();
-            String xemail = email.getText().trim();
-            String xtype = type.getSelectedItem() == null ? "" : type.getSelectedItem().toString().trim();
-            String xstatus = status.getSelectedItem() == null ? "" : status.getSelectedItem().toString().trim();
-            String xgender = gender.getSelectedItem() == null ? "" : gender.getSelectedItem().toString().trim();
+            String xdob = dob1.getText().trim();
+            String xemail = email1.getText().trim();
+            String xtype = type1.getSelectedItem() == null ? "" : type1.getSelectedItem().toString().trim();
+            String xstatus = status1.getSelectedItem() == null ? "" : status1.getSelectedItem().toString().trim();
+            String xgender = gender1.getSelectedItem() == null ? "" : gender1.getSelectedItem().toString().trim();
 
             if (xdob.isEmpty() || xemail.isEmpty() || xtype.isEmpty() || xstatus.isEmpty() || xgender.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "PLEASE FILL ALL THE FIELDS!");
@@ -205,12 +211,12 @@ public class AdminDash extends javax.swing.JFrame {
             } else {
                 Conn cn = new Conn();
                 cn.updateData("update signup set dob = '" + xdob + "', gender = '" + xgender + "',email='" + xemail + "', "
-                        + "type='" + xtype + "', status = '" + xstatus + "',image= '" + destination + "' where signID = '" + id.getText() + "'");
+                        + "type='" + xtype + "', status = '" + xstatus + "',image= '" + destination + "' where signID = '" + id1.getText() + "'");
 
                 if (selectedFile != null) {
                     Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-                JOptionPane.showMessageDialog(this, "PRODUCT UPDATED SUCCESSFULLY!");
+                JOptionPane.showMessageDialog(this, "ACCOUNT UPDATED SUCCESSFULLY!");
                 displayData();
                 pendingAccounts();
                 UserLogs();
@@ -375,7 +381,6 @@ public class AdminDash extends javax.swing.JFrame {
         newPassword = new javax.swing.JPasswordField();
         oldPassword = new javax.swing.JPasswordField();
         jLabel20 = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1240, 640));
@@ -949,19 +954,6 @@ public class AdminDash extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("tab1", jPanel9);
 
-        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
-        jPanel13.setLayout(jPanel13Layout);
-        jPanel13Layout.setHorizontalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1235, Short.MAX_VALUE)
-        );
-        jPanel13Layout.setVerticalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 675, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("tab8", jPanel13);
-
         jPanel1.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 1240, 700));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -979,6 +971,100 @@ public class AdminDash extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void showPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPassActionPerformed
+        char echoChar = showPass.isSelected() ? (char) 0 : '*';
+        oldPassword.setEchoChar(echoChar);
+        newPassword.setEchoChar(echoChar);
+        cpassword.setEchoChar(echoChar);
+    }//GEN-LAST:event_showPassActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        try {
+            if (!validationChecker()) {
+            } else {
+                Session sess = Session.getInstance();
+                ResultSet rs = new Conn().getData("select * from signup where signID = '" + sess.getSignID() + "'");
+                if (rs.next()) {
+                    String oldPass = rs.getString("pin");
+                    String oldHash = passwordHashing.hashPassword(oldPassword.getText());
+
+                    if (oldPass.equals(oldHash)) {
+                        String newPass = passwordHashing.hashPassword(newPassword.getText());
+                        new Conn().updateData("update signup set pin = '" + newPass + "' where signID = '" + sess.getSignID() + "'");
+                        JOptionPane.showMessageDialog(null, "ACCOUNT SUCCESSFULLY UPDATED!");
+                        new Login().setVisible(true);
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "OLD PASSWORD IS INCORRECT!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "NO ACCOUNT FOUND!");
+                }
+            }
+        } catch (SQLException | NoSuchAlgorithmException er) {
+            System.out.println("Error: " + er.getMessage());
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton35ActionPerformed
+        try {
+            updateAccount();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(AdminDash.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton35ActionPerformed
+
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+        destination = "";
+        path = "";
+        icon3.setIcon(null);
+        oldPath = "";
+    }//GEN-LAST:event_jButton24ActionPerformed
+
+    private void jButton36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton36ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            try {
+                selectedFile = fileChooser.getSelectedFile();
+                destination = "src/UsersImage/" + selectedFile.getName();
+                path = selectedFile.getAbsolutePath();
+
+                if (FileExistenceChecker(path) == 1) {
+                    JOptionPane.showMessageDialog(null, "File Already Exist, Rename or Choose another!");
+                    destination = "";
+                    path = "";
+                } else {
+                    icon3.setIcon(ResizeImage(path, null, icon3));
+                    remove.setEnabled(true);
+                    select.setEnabled(false);
+                }
+            } catch (Exception ex) {
+                System.out.println("File Error!");
+            }
+        }
+    }//GEN-LAST:event_jButton36ActionPerformed
+
+    private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton34ActionPerformed
+        jTabbedPane1.setSelectedIndex(6);
+    }//GEN-LAST:event_jButton34ActionPerformed
+
+    private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton33ActionPerformed
+        jTabbedPane1.setSelectedIndex(0);
+    }//GEN-LAST:event_jButton33ActionPerformed
+
+    private void id1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_id1ActionPerformed
+
     private void jButton38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton38ActionPerformed
         MessageFormat header = new MessageFormat("Total Success Delivery Reports");
         MessageFormat footer = new MessageFormat("Page{0,number,integer}");
@@ -992,6 +1078,14 @@ public class AdminDash extends javax.swing.JFrame {
     private void jButton37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton37ActionPerformed
         jTabbedPane1.setSelectedIndex(0);
     }//GEN-LAST:event_jButton37ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        try {
+            declineAccount();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminDash.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
         MessageFormat header = new MessageFormat("Total Pending Orders Reports");
@@ -1056,7 +1150,7 @@ public class AdminDash extends javax.swing.JFrame {
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
         try {
-            updateProduct();
+            updateAccount();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(AdminDash.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1189,19 +1283,17 @@ public class AdminDash extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         {
-            JOptionPane.showMessageDialog(null, "Please Choose An Index!");
-            TableModel tbl = usersTB.getModel();
             Session sess = Session.getInstance();
             String query = "SELECT * FROM signup WHERE signID = '" + sess.getSignID() + "'";
             try {
                 try (ResultSet rs = new Conn().getData(query)) {
                     if (rs.next()) {
-                        id.setText(rs.getString("signID"));
-                        dob.setText(rs.getString("dob"));
-                        email.setText(rs.getString("dob"));
-                        gender.setSelectedItem(rs.getString("gender"));
-                        status.setSelectedItem(rs.getString("status"));
-                        type.setSelectedItem(rs.getString("type"));
+                        id1.setText(rs.getString("signID"));
+                        dob1.setText(rs.getString("dob"));
+                        email1.setText(rs.getString("email"));
+                        gender1.setSelectedItem(rs.getString("gender"));
+                        status1.setSelectedItem(rs.getString("status"));
+                        type1.setSelectedItem(rs.getString("type"));
 
                         String imagePath = rs.getString("image");
 
@@ -1210,7 +1302,7 @@ public class AdminDash extends javax.swing.JFrame {
                         });
 
                         if (imagePath != null && !imagePath.isEmpty()) {
-                            icon3.setIcon(ResizeImage(imagePath, null, icon3));
+                            icon4.setIcon(ResizeImage(imagePath, null, icon4));
                             oldPath = imagePath;
                             path = imagePath;
                             destination = imagePath;
@@ -1235,81 +1327,6 @@ public class AdminDash extends javax.swing.JFrame {
         ld.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        try {
-            declineAccount();
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminDash.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void id1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_id1ActionPerformed
-
-    private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton33ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton33ActionPerformed
-
-    private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton34ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton34ActionPerformed
-
-    private void jButton36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton36ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton36ActionPerformed
-
-    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton24ActionPerformed
-
-    private void jButton35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton35ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton35ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        jTabbedPane1.setSelectedIndex(0);
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        try {
-            if (!validationChecker()) {
-            } else {
-                Session sess = Session.getInstance();
-                ResultSet rs = new Conn().getData("select * from signup where signID = '" + sess.getSignID() + "'");
-                if (rs.next()) {
-                    String oldPass = rs.getString("pin");
-                    String oldHash = passwordHashing.hashPassword(oldPassword.getText());
-
-                    if (oldPass.equals(oldHash)) {
-                        String newPass = passwordHashing.hashPassword(newPassword.getText());
-                        new Conn().updateData("update signup set pin = '" + newPass + "' where signID = '" + sess.getSignID() + "'");
-                        JOptionPane.showMessageDialog(null, "ACCOUNT SUCCESSFULLY UPDATED!");
-                        new Login().setVisible(true);
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "OLD PASSWORD IS INCORRECT!");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "NO ACCOUNT FOUND!");
-                }
-            }
-        } catch (SQLException | NoSuchAlgorithmException er) {
-            System.out.println("Error: " + er.getMessage());
-        }
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void showPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPassActionPerformed
-        char echoChar = showPass.isSelected() ? (char) 0 : '*';
-        oldPassword.setEchoChar(echoChar);
-        newPassword.setEchoChar(echoChar);
-        cpassword.setEchoChar(echoChar);
-    }//GEN-LAST:event_showPassActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1418,7 +1435,6 @@ public class AdminDash extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

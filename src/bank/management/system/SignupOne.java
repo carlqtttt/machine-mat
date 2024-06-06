@@ -218,7 +218,7 @@ public class SignupOne extends JFrame implements ActionListener {
                     + "values('" + formno + "',"
                     + "'" + dob + "','" + gender + "', '" + email + "', '" + xtype + "','" + xxpin + "', 'pending', '" + destination + "')");
 
-            c.insertData("insert into login values('" + formno + "', '" + cardnumber + "', '" + xxpin + "', 'pending', '" + xtype + "')");
+            c.insertData("insert into login (formno, cardnumber, pin, status, type) values('" + formno + "', '" + cardnumber + "', '" + xxpin + "', 'pending', '" + xtype + "')");
 
             if (destination != null && imagePath != null) {
                 Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
