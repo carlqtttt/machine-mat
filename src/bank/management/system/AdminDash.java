@@ -79,7 +79,7 @@ public class AdminDash extends javax.swing.JFrame {
     private void viewLogs() {
         try {
             Session sess = Session.getInstance();
-            ResultSet rs = new Conn().getData("select * from login where signID != '" + sess.getSignID() + "'");
+            ResultSet rs = new Conn().getData("select * from login where id != '" + sess.getSignID() + "'");
             usersTB.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException e) {
             System.err.println("An error occurred while fetching data: " + e.getMessage());
@@ -135,13 +135,13 @@ public class AdminDash extends javax.swing.JFrame {
     }
 
     public void deleteProduct() throws NoSuchAlgorithmException, SQLException {
-        int confirmation = JOptionPane.showConfirmDialog(null, "ARE YOU SURE YOU WANT TO DELETE THIS PRODUCT?", "CONFIRMATION", JOptionPane.YES_NO_OPTION);
+        int confirmation = JOptionPane.showConfirmDialog(null, "ARE YOU SURE YOU WANT TO DELETE THIS ACCOUNT?", "CONFIRMATION", JOptionPane.YES_NO_OPTION);
         if (confirmation == JOptionPane.YES_OPTION) {
             Conn cn = new Conn();
             String query = "DELETE FROM signup WHERE signID = '" + id.getText() + "'";
             try (PreparedStatement pstmt = cn.getConnection().prepareStatement(query)) {
                 pstmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "PRODUCT DELETED SUCCESSFULLY!");
+                JOptionPane.showMessageDialog(this, " ACCOUNT DELETED SUCCESSFULLY!");
                 displayData();
                 pendingAccounts();
                 UserLogs();
