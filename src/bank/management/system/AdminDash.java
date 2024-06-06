@@ -79,7 +79,7 @@ public class AdminDash extends javax.swing.JFrame {
     private void viewLogs() {
         try {
             Session sess = Session.getInstance();
-            ResultSet rs = new Conn().getData("select * from logs where signID != '" + sess.getSignID() + "'");
+            ResultSet rs = new Conn().getData("select * from login where signID != '" + sess.getSignID() + "'");
             usersTB.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException e) {
             System.err.println("An error occurred while fetching data: " + e.getMessage());
@@ -88,7 +88,7 @@ public class AdminDash extends javax.swing.JFrame {
 
     private void UserLogs() {
         try {
-            ResultSet rs = new Conn().getData("select * from logs");
+            ResultSet rs = new Conn().getData("select * from bank");
             logs.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException e) {
             System.err.println("An error occurred while fetching data: " + e.getMessage());
@@ -298,7 +298,6 @@ public class AdminDash extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         usersTB = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -461,15 +460,6 @@ public class AdminDash extends javax.swing.JFrame {
             }
         });
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 570, 110, -1));
-
-        jButton5.setFont(new java.awt.Font("Yu Gothic", 0, 11)); // NOI18N
-        jButton5.setText("MY ACCOUNT");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 570, 110, -1));
 
         jButton9.setFont(new java.awt.Font("Yu Gothic", 0, 11)); // NOI18N
         jButton9.setText("EDIT");
@@ -1281,47 +1271,6 @@ public class AdminDash extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        {
-            Session sess = Session.getInstance();
-            String query = "SELECT * FROM signup WHERE signID = '" + sess.getSignID() + "'";
-            try {
-                try (ResultSet rs = new Conn().getData(query)) {
-                    if (rs.next()) {
-                        id1.setText(rs.getString("signID"));
-                        dob1.setText(rs.getString("dob"));
-                        email1.setText(rs.getString("email"));
-                        gender1.setSelectedItem(rs.getString("gender"));
-                        status1.setSelectedItem(rs.getString("status"));
-                        type1.setSelectedItem(rs.getString("type"));
-
-                        String imagePath = rs.getString("image");
-
-                        SwingUtilities.invokeLater(() -> {
-                            jTabbedPane1.setSelectedIndex(5);
-                        });
-
-                        if (imagePath != null && !imagePath.isEmpty()) {
-                            icon4.setIcon(ResizeImage(imagePath, null, icon4));
-                            oldPath = imagePath;
-                            path = imagePath;
-                            destination = imagePath;
-                            select.setEnabled(false);
-                            remove.setEnabled(true);
-                        } else {
-                            select.setEnabled(true);
-                            remove.setEnabled(false);
-                        }
-                    } else {
-                        System.out.println("No data found for id: " + sess.getSignID());
-                    }
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(AdminDash.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Login ld = new Login();
         ld.setVisible(true);
@@ -1407,7 +1356,6 @@ public class AdminDash extends javax.swing.JFrame {
     private javax.swing.JButton jButton37;
     private javax.swing.JButton jButton38;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
